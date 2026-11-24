@@ -1,0 +1,10 @@
+# 本技能运行时不产生代码文件；排除本地环境噪音
+.exam-answer/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+*~
+.vscode/
+.idea/
+__pycache__/
