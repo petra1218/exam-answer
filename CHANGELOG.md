@@ -5,6 +5,38 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-25
+
+能力接入版。解决"腾讯文档 MCP 已加载，却仍按资料未覆盖作答"的问题：核心功能依赖腾讯文档，但旧版按零依赖技能设计，导致能力可用却没被使用。contract 仍为 exam-answer/v1，答案格式与计算规则未变。优先支持 WorkBuddy，通用降级路径完整保留。
+
+### 新增
+
+- SKILL.md"能力与入口"：先判断腾讯文档能力在不在，再选 WorkBuddy 快通道或通用路径。快通道优先看宿主注入的连接器状态（connected 即零调用），看不到才调一次 tdoc_init 确认；给出可复用命令形式、脚本定位规则和字段桥接表。
+- "资料源自动发现"：消息里的链接 → 本机资料源.txt → 按课程名用 manage.search_file 只搜文件夹 → 不传 folder_id 列根目录挑课程文件夹 → 才向用户要链接。设置资料源从必做降为可选快捷方式。
+- "答题"自动补齐：本会话没装讲义时贴题，能力可用就自动走发现与开考五步，装完再答；推不出课程名只问一句"哪门课"；确实不可用才按通用知识答并标"把握：低"。只在同会话首次贴题做一次。
+- 故障排查新增第 13 条"WorkBuddy 快通道不可用"（脚本找不到、命令报错、字段混用）的回退办法；第 1 条改为 WorkBuddy 只提示"需要腾讯文档连接器"、由宿主引导卡片接管。
+- README 与 INSTALL 写明"贴题就能用"、连接腾讯文档不等于讲义已在会话里，并钉死安装后的正确说法。
+
+### 修改
+
+- 硬约束 1 改为"不新增依赖，能力由宿主提供"，不再因"零依赖"跳过已连上的腾讯文档能力；硬约束 3 补"不写死插件版本目录"，脚本按"腾讯文档 MCP 调用入口"描述定位。
+- 目录列举补清 finish 与 truncated 的区别：finish 为 false 是还有下一页，truncated 为 true 才是本页被截断、需作废重做；故障排查第 4 条同步。
+- 自检第 2 步先看宿主连接器状态，看不到才在会话工具列表里按功能找；第 4 步资料源未设置不再判缺失或中断，记"未设置（可自动发现）"。
+- "工具与命名"节并入"能力与入口"，认功能不认名字的通用路径完整保留。
+- description 改写为"连上腾讯文档后贴题即自动装讲义"，控制在 350 字以内。
+
+### 为什么
+
+- 实测 WorkBuddy 里腾讯文档能力不在会话工具列表，而在 tencent-docs 技能自带的 tencentdocs.py 里；旧版让自检"在会话工具列表里按功能找工具"，在 WorkBuddy 里必然找不到，于是判未接入或不去读讲义，最后标"把握：低"。
+- 实测 manage.folder_list 不传 folder_id 就能列根目录（返回 finish、truncated、list），manage.search_file 带 only_folder 能按课程名精确命中课程文件夹；"必须用户先给链接 + 必须先说开考"是人为加的两道仪式。
+- 实测插件缓存同时存在 library-office-edit、tencent-docs、tencent-saas-docs 三个同名脚本和新旧两代版本目录，写死路径或混用 search_file 的 file_id 与 folder_list 的 id 会让链路断掉。
+- 自动发现若列根目录会看到使用者其它文件夹标题，因此规定这些标题不进任何输出、不进汇总、不拿来作答，且优先按课程名搜文件夹以避免列根目录。
+
+### 实测（本版）
+
+- 快通道全链路只读实测：tdoc_init 返回 READY；不传 folder_id 列根目录返回 20 条；按课程名只搜文件夹精确命中一个课程文件夹；其 file_id 可直接列内容，按识别表得导览 1、讲义 9、按需资料 4；get_content 读回讲义正文。
+- 原有能力回归：系数表、计算命令、例题、六类题型速查表、五步开考、答案册、故障排查条目均未改动或仅同步措辞。
+
 ## [0.2.0] - 2026-11-25
 
 修订版。解决审查与全新上下文端到端测试查出的问题：目录列举被截断、资料识别漏认、大文档读不全、字符数拿不到、自检读进大量课件、链路太慢、计算部分有错和缺口。contract 仍为 exam-answer/v1，给用户的答案格式没变。
@@ -68,9 +100,10 @@
 
 ## 版本对比
 
-- GitHub：https://github.com/petra1218/exam-answer/compare/v0.1.0...v0.2.0
-- GitCode：https://gitcode.com/petra1218/exam-answer/compare/v0.1.0...v0.2.0
+- GitHub：https://github.com/petra1218/exam-answer/compare/v0.2.0...v0.3.0
+- GitCode：https://gitcode.com/petra1218/exam-answer/compare/v0.2.0...v0.3.0
 
-[Unreleased]: https://github.com/petra1218/exam-answer/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/petra1218/exam-answer/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/petra1218/exam-answer/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/petra1218/exam-answer/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/petra1218/exam-answer/releases/tag/v0.1.0
