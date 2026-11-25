@@ -77,7 +77,7 @@ WorkBuddy 的目录是：
 - git clone https://github.com/petra1218/exam-answer.git（已验证）
 - git clone https://gitcode.com/petra1218/exam-answer.git（已验证）
 - npx skills add petra1218/exam-answer --agent universal -y（已验证；不带 --agent 时会进入交互式 agent 选择，WorkBuddy 不在其支持列表）
-- 复制技能目录到 C:\Users\admin\.workbuddy\skills\exam-answer\ 并在 WorkBuddy 跑自检（已验证）
+- 复制技能目录到 ~/.workbuddy/skills/exam-answer/ 并在 WorkBuddy 跑自检（已验证）
 
 ## 许可证
 
