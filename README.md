@@ -22,13 +22,13 @@
 
 ### 方式一：把这句话发给你的 agent
 
-GitHub 版（WorkBuddy、支持 npx skills 的 agent）：
+GitHub 版（WorkBuddy 及多数 agent）：
 
-    请帮我安装一个技能：用 npx skills add petra1218/exam-answer 安装，装完执行一次自检。
+    请帮我安装一个技能：从 https://github.com/petra1218/exam-answer 克隆仓库，把 exam-answer 技能目录复制到你的技能目录，装完执行一次自检。
 
 GitCode 版（国内网络）：
 
-    请帮我安装一个技能：从 https://gitcode.com/petra1218/exam-answer 克隆仓库，把其中的 exam-answer 技能目录复制到你的技能目录，装完执行一次自检。
+    请帮我安装一个技能：从 https://gitcode.com/petra1218/exam-answer 克隆仓库，把 exam-answer 技能目录复制到你的技能目录，装完执行一次自检。
 
 ### 方式二：手动安装
 
@@ -43,6 +43,8 @@ WorkBuddy 的目录是：
 （macOS / Linux 为 ~/.workbuddy/skills/exam-answer/）
 
 安装命令在本机实际验证情况见文末"已验证的安装命令"。
+
+关于 npx skills add：实测它能识别本仓库并克隆成功，但它支持的 79 个 agent 里没有 WorkBuddy，会把技能装到项目内的 .agents/skills/，WorkBuddy 读不到。WorkBuddy 用户请用上面的克隆复制方式；其他 agent（如 Claude Code、Cursor 等）可用 `npx skills add petra1218/exam-answer`，交互选择 agent，或非交互加 `--agent <名称> -y`。
 
 ## 五步使用
 
@@ -73,8 +75,9 @@ WorkBuddy 的目录是：
 以下命令在 Windows 11 + WorkBuddy 环境实际执行过：
 
 - git clone https://github.com/petra1218/exam-answer.git（已验证）
-- npx skills add petra1218/exam-answer（已验证）
-- git clone https://gitcode.com/petra1218/exam-answer.git（GitCode 网络原因，未验证）
+- git clone https://gitcode.com/petra1218/exam-answer.git（已验证）
+- npx skills add petra1218/exam-answer --agent universal -y（已验证；不带 --agent 时会进入交互式 agent 选择，WorkBuddy 不在其支持列表）
+- 复制技能目录到 C:\Users\admin\.workbuddy\skills\exam-answer\ 并在 WorkBuddy 跑自检（已验证）
 
 ## 许可证
 

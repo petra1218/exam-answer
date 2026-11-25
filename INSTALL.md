@@ -12,7 +12,7 @@
 
     git clone https://gitcode.com/petra1218/exam-answer.git
 
-也支持 npx skills add petra1218/exam-answer（只认 GitHub 地址）。
+也支持 npx skills add petra1218/exam-answer（只认 GitHub 地址）。实测注意：它的 79 个 agent 支持列表里没有 WorkBuddy，会把技能装到项目内的 .agents/skills/，WorkBuddy 读不到；WorkBuddy 请走上面的克隆复制方式。非交互安装需加 --agent <名称> -y，例如 --agent universal -y。
 
 ## 2. 复制技能目录
 
