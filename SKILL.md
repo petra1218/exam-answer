@@ -1,7 +1,7 @@
 ---
 name: exam-answer
 description: 开卷考试答题技能（腾讯文档讲义版）。第一次用某门课把讲义、答案册、口径表拉到本机存好，之后每次开考、贴题、发试卷照片都只读本机，不再联网，直接给可以手抄的纯文本答案，计算题按"假设、公式、代入、结果带单位"给过程分。不必先设置资料源或说开考。也支持自检、准备考试、更新资料、出答案册、设置资料源、存本人情况。用户会说："开考 某课程""准备考试""开卷了""帮我答这几道题""这门课帮我答""答题""试卷照片发你了""题在图里帮我答下""资料更新了""更新一下讲义""先自检一下""深度自检""出答案册""设置资料源""资料源是这个链接""存成本人情况""把这份材料存成本人情况"。凡是要按课堂讲义口径答某门具体课程的题、资料在腾讯文档，各种口语说法（含简称、错字）都触发。不触发：资料不在腾讯文档的普通学习提问、知识点科普、笔记整理、资料搜索、闭卷备考背诵计划、无关题目。
-version: 0.4.0
+version: 0.4.1
 contract: exam-answer/v1
 agent_created: true
 ---
@@ -42,8 +42,8 @@ WorkBuddy 快通道的全部规则都在本文件。贴题到出答案不读任�
 每条规则给为什么和怎么自检。
 
 **1. 不新增依赖，能力由宿主提供。**
-为什么：同学的机器上可能没有 Python、Node，考场没时间装环境；但读腾讯文档这件事本来就要靠宿主已有的能力，不能因为"零依赖"就假装它不存在、不去用。
-自检：任何一步要使用者装东西就换路；已经连上的腾讯文档能力必须真的调一次，不能跳过。
+为什么：同学的机器上可能没有 Python、Node，考场没时间装环境；读腾讯文档要用的是宿主自带的运行时和插件（WorkBuddy 自带 python，装在 `~/.workbuddy/binaries/python/` 下），这不算使用者要装的东西；但不能因为"零依赖"就假装它不存在、不去用。
+自检：任何一步要使用者装东西就换路（宿主自带的运行时不算）；已经连上的腾讯文档能力必须真的调一次，不能跳过。
 示例：WorkBuddy 用内置的腾讯文档脚本，其他 agent 用它的腾讯文档 MCP 工具；都不要求使用者另装。
 
 **2. 仓库里和输出里都不出现真实课程资料，也不出现使用者的个人信息。**
@@ -82,16 +82,16 @@ WorkBuddy 快通道的全部规则都在本文件。贴题到出答案不读任�
 
 - 看宿主注入的连接器状态：腾讯文档为 connected，直接走快通道，零调用。首次实际读讲义若报错，按故障排查第 1、13 条回退，不要因此判"资料未覆盖"。
 - 看不到状态或状态不明：调一次 tdoc_init，返回 READY 才算接上；不是 READY 按故障排查第 1 条处理。
-- 脚本定位：加载 tencent-docs 技能后用自带的 tencentdocs.py。插件缓存里同时有 library-office-edit、tencent-docs、tencent-saas-docs 三个同名脚本，还有新旧两代版本目录；只认描述为"腾讯文档 MCP 调用入口"的那个，别写死带版本号的目录。找不到就回退通用路径。
+- 脚本定位：加载 tencent-docs 技能后用自带的 tencentdocs.py。插件缓存在用户主目录的 `.workbuddy/plugins/` 下，和技能目录 `~/.workbuddy/skills/` 同一个根（macOS 是 `/Users/<用户名>/.workbuddy/plugins/`，Linux 是 `/home/<用户名>/.workbuddy/plugins/`）；用列文件工具按文件名搜 `tencentdocs.py`，别猜带版本号的路径。插件缓存里同时有 library-office-edit、tencent-docs、tencent-saas-docs 三个同名脚本，还有新旧两代版本目录；只认描述为"腾讯文档 MCP 调用入口"的那个。找不到就回退通用路径。
 
-命令形式，service 一律 tencent-docs，调用前用 tdoc_schema 查参数定义、别猜：
+命令形式，service 一律 tencent-docs，调用前用 tdoc_schema 查参数定义、别猜。`<PY>` 是解释器名，分平台：**macOS、Linux 用 `python3`，Windows 用 `python`**。这个 python 是 WorkBuddy 自带的运行时（本机实测装在 `~/.workbuddy/binaries/python/versions/<版本>/` 下，已加进 PATH），不需要使用者另装；两个名字都试过还不行，才按故障排查第 13 条处理。脚本路径带空格时加引号。
 
-    python <tencentdocs.py> tdoc_init
-    python <tencentdocs.py> tdoc_call tencent-docs manage.folder_list '{}'
-    python <tencentdocs.py> tdoc_call tencent-docs manage.search_file '{"search_key":"课程名","only_folder":true}'
-    python <tencentdocs.py> tdoc_call tencent-docs get_content '{"file_id":"..."}'
-    python <tencentdocs.py> tdoc_call tencent-docs slide_get_info '{"file_id":"..."}'
-    python <tencentdocs.py> tdoc_call tencent-docs slide_get_page_info '{"file_id":"...","page_index":0}'
+    <PY> <tencentdocs.py> tdoc_init
+    <PY> <tencentdocs.py> tdoc_call tencent-docs manage.folder_list '{}'
+    <PY> <tencentdocs.py> tdoc_call tencent-docs manage.search_file '{"search_key":"课程名","only_folder":true}'
+    <PY> <tencentdocs.py> tdoc_call tencent-docs get_content '{"file_id":"..."}'
+    <PY> <tencentdocs.py> tdoc_call tencent-docs slide_get_info '{"file_id":"..."}'
+    <PY> <tencentdocs.py> tdoc_call tencent-docs slide_get_page_info '{"file_id":"...","page_index":0}'
 
 字段桥接（写错链路就断，已实测）：
 
@@ -234,7 +234,7 @@ search_file 返回 file_id、没有 id 字段；folder_list 返回 id。别混�
 自检：确认自检没读任何课件；确认表里没有字符数一列。
 示例（虚构数据）：
 
-    exam-answer 自检 版本 0.4.0
+    exam-answer 自检 版本 0.4.1
     账号：某同学
     检查项          结果        说明
     腾讯文档工具    已接入      WorkBuddy 快通道，tdoc_init 返回 READY

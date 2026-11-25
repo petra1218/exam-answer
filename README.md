@@ -8,7 +8,18 @@
 - 答案纯文本输出：不加粗、无星号井号横线、不写出处，可以有（1）（2）（3）这类手写序号。
 - 资料全在腾讯文档，靠使用者自己的账号读取；本机缓存只在自己机器上。
 
-版本：0.4.0（contract: exam-answer/v1）
+版本：0.4.1（contract: exam-answer/v1）
+
+## 平台支持
+
+| 平台 | 状态 | 说明 |
+|---|---|---|
+| Windows + WorkBuddy | 已实测 | 快通道、落地、检索全链路跑过 |
+| macOS + WorkBuddy | 未实测，按同构推断 | 技能目录、缓存目录同一套写法；差异只在命令名，macOS 用 `python3`，Windows 用 `python`。装完先跑自检，读到导览即链路通 |
+| Linux + WorkBuddy | 未实测 | 同上，解释器用 `python3` |
+| 其他 agent（Claude Code、Cursor 等） | 未测 | 走通用路径，按功能找列目录和读正文工具，没有快通道 |
+
+macOS 上唯一容易卡住的地方是解释器名。技能里命令一律写 `<PY>` 占位，按平台换成 `python3` 或 `python`；这两个都是 WorkBuddy 自带的运行时，不需要额外安装。真找不到时进 `~/.workbuddy/binaries/python/` 按版本目录找，用全路径调用。
 
 ## 前置条件
 

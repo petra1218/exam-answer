@@ -5,6 +5,29 @@
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-11-25
+
+macOS 适配版。功能不变，只修平台假设。起因是核对 macOS 上的 WorkBuddy 能不能用：技能目录和缓存目录本来就是 `~/.workbuddy/`、`~/.exam-answer/` 这套与平台无关的写法，但命令层写死了 `python`，而 macOS 上没有这个命令（只有 `python3`），快通道第一步就会卡住。
+
+### 修改
+
+- SKILL.md 能力与入口：命令形式的解释器改为 `<PY>` 占位，明确 macOS、Linux 用 `python3`，Windows 用 `python`；补说明这个 python 是 WorkBuddy 自带的运行时（实测在 `~/.workbuddy/binaries/python/versions/<版本>/` 下，已在 PATH 里），不是要使用者另装的东西。脚本路径带空格要加引号。
+- 脚本定位补 macOS、Linux 的插件缓存位置（`/Users/<用户名>/.workbuddy/plugins/`、`/home/<用户名>/.workbuddy/plugins/`），并要求按文件名搜，不猜版本目录。
+- 故障排查第 13 条新增"解释器"一条：报 `python: command not found` 时先换名字重试（两个都试），仍不行去 `~/.workbuddy/binaries/python/` 按版本目录找解释器用全路径调用。
+- INSTALL.md 环境说明改写：原来只写"优先支持 Windows 上的 WorkBuddy"，现在写清 Windows 已实测、macOS 未实测按同构推断、差异在哪儿；技能目录表拆成两行，状态分别标注。
+- README 新增"平台支持"表，把已实测、按同构推断、未测三种状态分开写，不留模糊。
+
+### 为什么
+
+- macOS 12 起系统不再带 `python`，只有 `python3`；命令写死 `python` 会让快通道在第一步就报 command not found，而装配说明又写着"不需要装依赖"，用户会以为是环境坏了。
+- 计算部分不受影响：macOS 用 awk，BSD awk 支持 POSIX 的 `^` 和 `printf %.4f`，与文档已有的 awk 版本一致；`[math]` 那组本来就是 Windows PowerShell 专用，文档已按平台分开写。
+
+### 说明（未实测边界）
+
+- macOS 上的 WorkBuddy 没有实机验证：本机是 Windows，无法实测。技能目录 `~/.workbuddy/skills/`、插件缓存 `~/.workbuddy/plugins/`、自带 python 的位置，都按同一产品的跨平台同构推断，不是实测结果。
+- 保底路径本身跨平台：快通道不可用时回退"按功能找列目录和读正文工具"，这条不依赖任何命令行，macOS 上即使快通道完全跑不通，也能读到资料。
+- 装完请先跑自检：自检能读到导览，就说明链路通；报什么错按故障排查第 13 条走。
+
 ## [0.4.0] - 2026-11-25
 
 一次性落地版。解决"初始化一次、以后能不能正常用"的根本问题：旧版把讲义装进会话上下文，上下文不跨会话，所以每开一个新会话都要重新从腾讯文档拉一遍——"准备一次就够"并不成立。本版把资料落到本机文件，之后所有会话读本机。contract 仍为 exam-answer/v1，答案格式与计算规则未变。

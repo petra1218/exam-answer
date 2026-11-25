@@ -37,7 +37,8 @@
 
 | agent | 技能目录 | 状态 |
 |---|---|---|
-| WorkBuddy | ~/.workbuddy/skills/（各平台同一写法） | 可用 |
+| WorkBuddy（Windows） | ~/.workbuddy/skills/ | 已实测 |
+| WorkBuddy（macOS） | ~/.workbuddy/skills/（同一写法） | 未实测，按同构推断 |
 | Claude Code | ~/.claude/skills/ | 未测 |
 | Cursor | ~/.cursor/skills/ | 未测 |
 | 其他 | 查该 agent 的技能目录文档 | 未测 |
@@ -58,6 +59,7 @@
 
 ## 环境说明
 
-- 本仓库优先支持 Windows 上的 WorkBuddy：腾讯文档能力由内置 tencent-docs 技能提供，技能走快通道，自动发现课程文件夹；命令形式见 SKILL.md"能力与入口"。
+- 平台：Windows 上的 WorkBuddy 已实测（快通道、落地、检索全链路）。macOS 上的 WorkBuddy 未实测，按同构推断可用：技能目录、插件缓存都用 `~/.workbuddy/` 下同一套写法，差异只在命令名——macOS 用 `python3`，Windows 用 `python`。装完先跑自检，自检能读到导览就说明链路通。
+- 腾讯文档能力由内置 tencent-docs 技能提供，技能走快通道，自动发现课程文件夹；命令形式见 SKILL.md"能力与入口"。
 - 其他 agent 与系统走通用路径（按功能找列目录、读正文工具），也支持手工设置资料源与开考；未单独逐一实测，装完以自检结果为准。
-- 技能本身不新增脚本、不要求使用者安装依赖。
+- 技能本身不新增脚本、不要求使用者安装依赖。快通道用的 python 是 WorkBuddy 自带的运行时，不是需要用户装的东西。
